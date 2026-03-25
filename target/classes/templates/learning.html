@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Learning Workspace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col overflow-hidden">
+    <nav class="bg-gray-900 text-white p-4 shrink-0 flex justify-between items-center">
+        <div class="font-bold text-lg">
+            <a th:href="@{/}" class="hover:text-gray-300"><i class="fa-solid fa-arrow-left mr-2"></i>Back to Catalog</a>
+            <span class="mx-4">|</span>
+            <span th:if="${course != null}" th:text="${course.title}">Course Title</span>
+        </div>
+    </nav>
+
+    <div class="flex flex-col md:flex-row flex-1 overflow-y-auto md:overflow-hidden">
+        
+        <div class="flex-1 p-4 md:p-6 md:overflow-y-auto bg-gray-50 w-full">
+            <div th:if="${lesson != null}" class="max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold mb-6 text-gray-800" th:text="${lesson.title}">Lesson Title</h2>
+                <div class="aspect-w-16 aspect-h-9 mb-8 rounded-lg overflow-hidden shadow-lg bg-black">
+                    <iframe th:if="${lesson.videoUrl != null && !lesson.videoUrl.isEmpty()}" class="w-full h-[500px]" th:src="${lesson.videoUrl}" frameborder="0" allowfullscreen></iframe>
+                    <div th:unless="${lesson.videoUrl != null && !lesson.videoUrl.isEmpty()}" class="w-full h-[500px] flex items-center justify-center text-gray-400">No Video Available</div>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow Prose max-w-none">
+                    <h3 class="text-xl font-semibold mb-4 border-b pb-2">Lesson Notes</h3>
+                    <p class="text-gray-700 whitespace-pre-wrap" th:text="${lesson.content}">Content...</p>
+                </div>
+            </div>
+            <div th:if="${lesson == null}" class="flex h-full items-center justify-center">
+                <p class="text-gray-500 text-xl">Select a lesson from the syllabus on the right to start learning.</p>
+            </div>
+        </div>
+        
+        <div class="w-full md:w-96 bg-white border-t md:border-t-0 md:border-l shrink-0 flex flex-col h-auto md:h-full">
+            <div class="p-4 bg-gray-50 border-b font-bold text-gray-700">Course Syllabus</div>
+            <div class="flex-1 overflow-y-auto p-4 space-y-4">
+                <div th:if="${course != null}">
+                    <div th:each="module : ${course.modules}" class="mb-6">
+                        <h4 class="font-bold text-gray-800 mb-2 border-b pb-1">
+                            <i class="fa-solid fa-folder-open text-indigo-500 mr-2"></i>
+                            <span th:text="${'Module ' + module.orderNum + ': ' + module.title}"></span>
+                        </h4>
+                        <ul class="space-y-1">
+                            <li th:each="l : ${module.lessons}">
+                                <a th:href="@{/learning/{cid}/lesson/{lid}(cid=${courseId}, lid=${l.id})}" 
+                                   class="block p-2 rounded text-sm hover:bg-indigo-50 transition-colors"
+                                   th:classappend="${lesson != null && lesson.id == l.id} ? 'bg-indigo-100 text-indigo-700 font-medium' : 'text-gray-600'">
+                                    <i class="fa-solid fa-play-circle mr-2" th:classappend="${lesson != null && lesson.id == l.id} ? 'text-indigo-600' : 'text-gray-400'"></i>
+                                    <span th:text="${l.orderNum + '. ' + l.title}"></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>

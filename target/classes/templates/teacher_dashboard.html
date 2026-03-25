@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Teacher Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div th:if="${successMessage}" class="fixed top-20 right-4 bg-green-500 text-white px-6 py-3 rounded shadow-lg z-50 flex items-center transition-opacity duration-500" id="toast">
+        <i class="fa-solid fa-check-circle mr-3"></i>
+        <span th:text="${successMessage}"></span>
+    </div>
+    <script>
+        setTimeout(() => { const t = document.getElementById('toast'); if(t) t.style.opacity = '0'; setTimeout(()=> {if(t) t.style.display='none'}, 500); }, 3000);
+    </script>
+    <nav class="bg-white shadow">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="font-bold text-xl text-indigo-600 flex items-center">
+                <i class="fa-solid fa-chalkboard-user mr-2 text-indigo-500"></i>Teacher Studio
+            </div>
+            <div>
+                <form th:action="@{/logout}" method="post"><button type="submit" class="text-sm font-medium text-gray-600 hover:text-indigo-600">Logout</button></form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-10 px-4">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">My Courses</h1>
+            <button onclick="document.getElementById('createModal').classList.remove('hidden')" class="bg-indigo-600 text-white px-4 py-2 rounded shadow hover:bg-indigo-700 transition">
+                <i class="fa-solid fa-plus mr-2"></i>Create Course
+            </button>
+        </div>
+
+        <div class="bg-white shadow overflow-hidden sm:rounded-md">
+            <ul class="divide-y divide-gray-200">
+                <li th:each="course : ${courses}">
+                    <a th:href="@{/teacher/courses/{id}(id=${course.id})}" class="block hover:bg-gray-50 py-4 px-6 flex items-center justify-between transition">
+                        <div>
+                            <p class="text-lg font-medium text-indigo-600 truncate" th:text="${course.title}">Title</p>
+                            <p class="text-sm text-gray-500 mt-1">
+                                <span th:text="${course.status}" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Status</span>
+                                • <span th:text="${course.price + '$'}" class="font-medium text-gray-700">Price</span>
+                            </p>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-gray-400"></i>
+                    </a>
+                </li>
+                <li th:if="${courses.empty}" class="py-10 text-center text-gray-500">You haven't created any courses yet.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Create Course Modal -->
+    <div id="createModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
+        <div class="bg-white p-8 rounded-md shadow-xl w-[500px]">
+            <h2 class="text-xl font-bold mb-4">Create New Course</h2>
+            <form th:action="@{/teacher/courses}" method="post">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                    <input type="text" name="title" required class="w-full border-gray-300 rounded shadow-sm p-2 border">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea name="description" required class="w-full border-gray-300 rounded shadow-sm p-2 border" rows="3"></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Price</label>
+                    <input type="number" step="0.01" name="price" required class="w-full border-gray-300 rounded shadow-sm p-2 border">
+                </div>
+                <div class="flex justify-end gap-2">
+                    <button type="button" onclick="document.getElementById('createModal').classList.add('hidden')" class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
