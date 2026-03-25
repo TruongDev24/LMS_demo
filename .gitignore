@@ -1,0 +1,23 @@
+# Biên dịch và đầu ra (Cực kỳ quan trọng để bỏ qua thư mục target bạn đang gặp)
+target/
+*.class
+*.war
+*.ear
+*.jar
+
+# IDE (IntelliJ, Eclipse, VS Code)
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+.vscode/
+bin/
+
+# File tạm của hệ thống
+Thumbs.db
+.DS_Store
+
+# File cấu hình cá nhân (nếu có chứa mật khẩu database)
+*.log
+.env
